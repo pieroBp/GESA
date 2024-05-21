@@ -1,117 +1,148 @@
-<?php
-$alert = '';
-session_start();
-if (!empty($_SESSION['active'])) {
-  header('location: sistema/');
-} else {
-  if (!empty($_POST)) {
-    if (empty($_POST['usuario']) || empty($_POST['clave'])) {
-      $alert = '<div class="alert alert-danger" role="alert">
-  Ingrese su usuario y su clave
-</div>';
-    } else {
-      require_once "conexion.php";
-      $user = mysqli_real_escape_string($conexion, $_POST['usuario']);
-      $clave = md5(mysqli_real_escape_string($conexion, $_POST['clave']));
-      $query = mysqli_query($conexion, "SELECT u.idusuario, u.nombre, u.correo,u.usuario,r.idrol,r.rol FROM usuario u INNER JOIN rol r ON u.rol = r.idrol WHERE u.usuario = '$user' AND u.clave = '$clave'");
-      mysqli_close($conexion);
-      $resultado = mysqli_num_rows($query);
-      if ($resultado > 0) {
-        $dato = mysqli_fetch_array($query);
-        $_SESSION['active'] = true;
-        $_SESSION['idUser'] = $dato['idusuario'];
-        $_SESSION['nombre'] = $dato['nombre'];
-        $_SESSION['email'] = $dato['correo'];
-        $_SESSION['user'] = $dato['usuario'];
-        $_SESSION['rol'] = $dato['idrol'];
-        $_SESSION['rol_name'] = $dato['rol'];
-        header('location: sistema/');
-      } else {
-        $alert = '<div class="alert alert-danger" role="alert">
-              Usuario o Contraseña Incorrecta
-            </div>';
-        session_destroy();
-      }
-    }
-  }
+<?php include_once "includes/header.php"; ?>
+
+
+ 
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h1 class="h3 mb-0 text-gray-800">Productos de la Distribuidora PATITAS</h1>
+	</div>
+
+
+<style type="text/css">
+body{
+  background-color: lightgrey;
+  font-family: sans-serif;
 }
-?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
+.container{
+  margin: auto;
+  background-color: none;
+  width: 700px;
+  padding: 50px;
+} 
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+ul, li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
 
-  <title>PATITAS</title>
+ul.slider{
+  position: relative;
+  width: 700px;
+  height: 250px;
+}
 
-  <!-- Custom fonts for this template-->
-  <link rel="stylesheet" href="sistema/vendor/bootstrap/css/bootstrap.min.css">
-  <!-- Custom styles for this template-->
-  <link href="sistema/css/style.violet.css" rel="stylesheet">
+ul.slider li {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    opacity: 0;
+    width: inherit;
+    height: inherit;
+    transition: opacity .5s;
+    background:#fff;
+}
 
-</head>
 
-<body class="bg-gradient-primary">
 
-  <div class="container">
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
+ul.slider li img{
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
 
-      <div class="col-xl-10 col-lg-12 col-md-9">
+ul.slider li:first-child {
+    opacity: 1; /*Mostramos el primer <li>*/
+}
 
-        <div class="card o-hidden border-0 shadow-lg my-5">
-          <div class="card-body p-0">
-            <!-- Nested Row within Card Body -->
-            <div class="row">
-              <div class="col-lg-6 d-none d-lg-block bg-login-image">
-                <img src="sistema/img/patita.png" class="img-thumbnail">
-              </div>
-              <div class="col-lg-6">
-                <div class="p-5">
-                  <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Distribuidora Patitas </h1> 
-                  </div>
-                  <form class="user" method="POST">
-                    <?php echo isset($alert) ? $alert : ""; ?>
-                      <label for="">LOGIN</label> 
-                    <div class="form-group">
+ul.slider li:target {
+    opacity: 1; /*Mostramos el <li> del enlace que pulsemos*/
+}
 
-                      <label for="">Usuario</label>
-                      <input type="text" class="form-control" placeholder="Usuario" name="usuario"></div>
-                    <div class="form-group">
-                      <label for="">Contraseña</label>
-                      <input type="password" class="form-control" placeholder="Contraseña" name="clave">
-                    </div>
-                    <input type="submit" value="Iniciar" class="btn btn-primary">
-                    <hr>
-                  </form>
-                  <hr>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+.menu{
+  text-align: center;
+  margin: 20px;
+}
 
-      </div>
+.menu li{
+  display: inline-block;
+  text-align: center;
+}
 
-    </div>
+.menu li a{
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  background-color: grey;
+  padding: 10px;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  border-radius: 100%;
+}
 
-  </div>
+</style>
 
-  <!-- JavaScript files-->
-    <script src="sistema/vendor/jquery/jquery.min.js"></script>
-    <script src="sistema/vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="sistema/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="sistema/vendor/jquery.cookie/jquery.cookie.js"> </script>
-    <script src="sistema/vendor/jquery-validation/jquery.validate.min.js"></script>
-    <script src="sistema/js/front.js"></script>
+<body>
+
+	<!-- Content Row -->
+	 
+
+
+ <div class="container">
+  
+  <ul class="slider">
+    <li id="slide1">
+      <img src="img/comida1.png" width="100" height="100" />
+    </li>
+    <li id="slide2">
+      <img src="img/medicamento1.png" width="100" height="100"/>
+    </li>
+    <li id="slide3">
+       <img src="img/cosas1.jpg" width="100" height="100"/>
+    </li>
+  </ul>
+  
+ 
+  
+</div>
+
+ <ul class="menu">
+    <li>
+      <a href="#slide1">1</a>
+    </li>
+    <li>
+      <a href="#slide2">2</a>
+    </li>
+     <li>
+      <a href="#slide3">3</a>
+    </li>
+  </ul>
+		<!-- Earnings (Monthly) Card Example -->
+		 
+
+		<!-- Earnings (Monthly) Card Example -->
+		 
+
+		<!-- Earnings (Monthly) Card Example -->
+		 
+
+		<!-- Pending Requests Card Example -->
+		 
+	 <!--	<div class="col-lg-6">
+			<div class="au-card m-b-30">
+				<div class="au-card-inner">
+					<h3 class="title-2 m-b-40">Productos con stock mínimo</h3>
+					<canvas id="sales-chart"></canvas>
+				</div>
+			</div>
+		</div>-->
+		 
 
 
 </body>
+</div>
 
-</html>
+<?php include_once "includes/footer.php"; ?>
